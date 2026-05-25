@@ -1,31 +1,33 @@
+import pytest
 from selenium import webdriver
+from login_page import LoginPage
+from main_page import MainPage
+from cart_page import CartPage
+from checkout_page import CheckoutPage
 
 
-def test_purchase():
+@pytest.fixture
+def driver():
     driver = webdriver.Firefox()
-    driver.get("https://www.saucedemo.com/")
+    yield driver
+    driver.quit()
 
-    # Авторизация
+
+def test_purchase_flow(driver):
+    driver.get('https://www.saucedemo.com/')
+
     login_page = LoginPage(driver)
-    login_page.enter_username("standard_user")
-    login_page.enter_password("secret_sauce")
-    login_page.click_login()
+    login_page.login('standard_user', 'secret_sauce')
 
-    # Добавление товаров в корзину
     main_page = MainPage(driver)
-    main_page.add_to_cart("sauce-labs-backpack")
-    main_page.add_to_cart("sauce-labs-bolt-t-shirt")
-    main_page.add_to_cart("sauce-labs-onesie")
+    main_page.add_to_cart('Sauce Labs Backpack')
+    main_page.add_to_cart('Sauce Labs Bolt T-Shirt')
+    main_page.add_to_cart('Sauce Labs Onesie')
     main_page.go_to_cart()
 
-    # Переход к оформлению заказа
     cart_page = CartPage(driver)
-    cart_page.click_checkout()
+    cart_page.proceed_to_checkout()
 
-    # Заполнение формы и проверка итоговой стоимости
     checkout_page = CheckoutPage(driver)
-    checkout_page.fill_form("Имя", "Фамилия", "12345")
-    total = checkout_page.get_total()
-    assert total == "$58.29", f"Expected total to be $58.29 but got {total}"
-
-    driver.quit()
+    checkout_page.fill_information('Имя', 'Фамилия', '12345')
+    checkout_page.assert_total('58.29')
