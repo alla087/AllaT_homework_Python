@@ -1,6 +1,6 @@
 import unittest
 from selenium import webdriver
-from calculator_page import CalculatorPage  # Импортируем наш Page Object
+from main_page_calc import CalculatorPage  # Импортируем наш Page Object
 
 
 class CalculatorTest(unittest.TestCase):
