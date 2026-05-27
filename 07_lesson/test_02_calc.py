@@ -1,9 +1,7 @@
-import unittest
 from selenium import webdriver
 from main_page_calc import CalculatorPage  # Импортируем наш Page Object
 
-
-class CalculatorTest(unittest.TestCase):
+class CalculatorTestpytest:
     def setUp(self):
         self.driver = webdriver.Chrome()
         self.driver.get("https://bonigarcia.dev/selenium-webdriver-java/slow-calculator.html")
