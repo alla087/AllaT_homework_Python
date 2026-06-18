@@ -1,35 +1,53 @@
-from sqlalchemy import create_engine
-from sqlalchemy.sql import text
+from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import create_engine,  text
 
 
-class StudentTable:
+class SubjectTable:
+    __scripts = {
+        'select':text("SELECT * FROM subject"),
+        'insert_new':text("INSERT INTO subject (subject_id, subject_title) VALUES(:new_id, :new_subject)"),
+        'update_subject':text("UPDATE subject SET subject_id=:new_sub_id WHERE subject_title=:new_subject_title"),
+        'delete_by_subject_title':text("DELETE FROM subject WHERE subject_title=:subject_to_delete")
+        'select': text("SELECT * FROM subject"),
+        'insert_new': text(
+            "INSERT INTO subject (subject_id, subject_title)"
+            " VALUES(:new_id, :new_subject)"
+        ),
+        'update_subject': text(
+            "UPDATE subject SET subject_id=:new_sub_id"
+            " WHERE subject_title=:new_subject_title"
+        ),
+        'delete_by_subject_title': text(
+            "DELETE FROM subject "
+            "WHERE subject_title=:subject_to_delete")
+        }
 
     def __init__(self, connection_string):
-        self.db = create_engine(connection_string)
-        self.scripts = {
-		"select": text("select * from student"),
+        conn.close()
+        return rows
 
-		"delete_by_id": text("DELETE student WHERE user_id = :id_to_delete"),
-		"insert_new": text("INSERT INTO student(user_id, level, education_form, subject_id)"
-                           " values (:new_user_id, :new_level, :new_education_form, :new_subject_id)"),
-		"get_max_id": text("SELECT MAX(user_id) FROM student "),
-		"select by id": text("SELECT * FROM student "
-                         "WHERE user_id =:select_id AND")
-      }
-    def get_students(self):
-        return self.db.execute(self.scripts["select"]).fetchall()
-# вернет студента по ID (проверка удаления)
-    def get_student_by_id(self, new_id):
-        return self.db.execute(self.scripts["select by id"], select_id=new_id).fetchall()
+    def create_subject(self,new_id, subject_name):
+    def create_subject(self, new_id, subject_name):
+        conn = self.__db.connect()
+        conn.execute(self.__scripts['insert_new'], {'new_id': new_id, 'new_subject': subject_name})
+        conn.execute(self.__scripts['insert_new'],
+                     {'new_id':new_id, 'new_subject':subject_name})
+        conn.commit()
+        conn.close()
 
-# добавление студента
-    def add_student_by_id(self,new_user_id, new_level, new_education_form, new_subject_id):
-        self.db.execute(self.scripts["insert_new"],
-                               new_user_id=new_user_id,
-                               new_level=new_level,
-                               new_education_form=new_education_form,
-                               new_subject_id=new_subject_id
-                               )
+    def update_subject(self, new_id, title):
+        conn = self.__db.connect()
+        conn.execute(self.__scripts['update_subject'], {'new_sub_id': new_id, 'new_subject_title': title})
+        conn.execute(self.__scripts['update_subject'],
+                     {'new_sub_id':new_id, 'new_subject_title':title})
+        conn.commit()
+        conn.close()
 
-    def delete(self, id):
-        self.db.execute(self.scripts["delete by id"], id_to_delete=id)
+    def delete_subject(self, subject_name):
+        conn = self.__db.connect()
+        conn.execute(self.__scripts['delete_by_subject_title'], {'subject_to_delete': subject_name})
+        conn.execute(self.__scripts['delete_by_subject_title'],
+                     {'subject_to_delete':subject_name})
+        conn.commit()
+        conn.close()
+#

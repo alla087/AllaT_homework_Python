@@ -1,4 +1,4 @@
-result = db.get_subjects()
+ result = db.get_subjects()
     assert len(result) > 0
 
 
