@@ -18,21 +18,26 @@ class SubjectTable:
             "WHERE subject_title=:subject_to_delete")
         }
 
-    self.__db = create_engine(connection_string)
+    def __init__(self, connection_string):
+        self.__db = create_engine(connection_string)
 
-    def create_subject(self,new_id, subject_name):
+    def get_subjects(self):
+        conn = self.__db.connect()
+        result = conn.execute(self.__scripts['select'])
+        subjects = result.fetchall()  # Получаем все строки
+        conn.close()
+        return subjects
+
     def create_subject(self, new_id, subject_name):
         conn = self.__db.connect()
-        conn.execute(self.__scripts['insert_new'], {'new_id': new_id, 'new_subject': subject_name})
-        conn.execute(self.__scripts['insert_new'],
-                     {'new_id':new_id, 'new_subject':subject_name})
-
+        conn.execute(self.__scripts['insert_new'],{'new_id':new_id, 'new_subject':subject_name})
+        conn.commit()
         conn.close()
 
     def update_subject(self, new_id, title):
         conn = self.__db.connect()
         conn.execute(self.__scripts['update_subject'], {'new_sub_id': new_id, 'new_subject_title': title})
-                     {'new_sub_id':new_id, 'new_subject_title':title})
+
         conn.commit()
         conn.close()
 
