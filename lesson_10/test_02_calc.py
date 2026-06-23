@@ -8,8 +8,7 @@ import allure
 @allure.title("Получение результата сложения ")
 @allure.description("Сложение 7 и 8")
 @allure.severity("critical")
-@allure.suit('Калькулятор')
-
+@allure.suite("Калькулятор")
 def test_calc():
     browser = webdriver.Chrome()
     main_page = MainPageCalc(browser)
@@ -24,5 +23,5 @@ def test_calc():
         main_page.button_equals()
     result = main_page.result()
     with allure.step("Повереям результат вычисления"):
-        assert result == '15'
+        assert result == "15"
     main_page.close_browser()
